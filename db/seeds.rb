@@ -1,0 +1,1 @@
+Cocktail.create(name: "Straight Vod", directions: "Pour up")
