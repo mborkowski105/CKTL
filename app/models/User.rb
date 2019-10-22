@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
     has_many :user_ingredients
     has_many :ingredients, through: :user_ingredients
 
-    def inventory 
+    def inventory
         return UserIngredient.all.select do |ui|
             ui.user_id == self.id
         end
