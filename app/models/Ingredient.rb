@@ -3,4 +3,8 @@ class Ingredient < ActiveRecord::Base
     has_many :users, through: :user_ingredients
     has_many :cocktail_ingredients
     has_many :cocktails, through: :cocktail_ingredients
+
+    def self.find_by_name(name)
+        self.where('lower(name) LIKE ?', "%#{name.downcase}%").first
+    end
 end

@@ -57,7 +57,7 @@ def my_shelf
     when "Add to Shelf"
         add_to_shelf_prompt
     when "Remove from Shelf"
-
+        remove_from_shelf_prompt
     when "Clear Shelf"
         shelf_clear_prompt
     when "Main Menu"
