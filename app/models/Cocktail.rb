@@ -18,7 +18,7 @@ class Cocktail < ActiveRecord::Base
         self.where('lower(name) LIKE ?', "%#{name.downcase}%").first
     end
 
-    def self.select_by_name(name) #returns an array of cocktails that contain the search term
+    def self.select_by_name(name) #returns an array of cocktails that contains the search term
         self.where('lower(name) LIKE ?', "%#{name.downcase}%")
     end
 end
