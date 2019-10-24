@@ -1,7 +1,9 @@
 require_relative '../config/environment'
 
 def run
-    main_menu
+    while true
+        main_menu
+    end
 end
 
 greeting

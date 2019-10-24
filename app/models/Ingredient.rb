@@ -13,6 +13,6 @@ class Ingredient < ActiveRecord::Base
     end
 
     def self.valid_ingredient(name)
-        !!Ingredient.find_by(name: name)
+        !!Ingredient.find_by_name(name)
     end
 end

@@ -60,6 +60,7 @@ def create_account
 end
 
 def main_menu
+    system ("clear")
     choices = ["Make CKTL", "Browse CKTL", "My Shelf", "Log Out", "Quit"]
     option = PROMPT.select("What's the move tonight?", choices)
     case option
@@ -82,22 +83,31 @@ def make_CKTL
     # end
     # option = PROMPT.select(cktl_array)
     # puts "This feature has not yet been implemented."
-    choices = ["What can I make?", "Surprise me ;)", "Go back."]
+    choices = ["What can I make?", "Surprise me ;)", "What am I close to making?", "Go back."]
     option = PROMPT.select("Great, how should we drink?", choices)
     case option
-    when choices[0]
+    when "What can I make?"
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
         if possible_cocktails.empty?
-            PROMPT.keypress("No possible cocktails found. You should add more ingredients to your shelf. Press space or enter to continue", keys: [:space, :return])
+            PROMPT.keypress("No possible cocktails found. You should add more ingredients to your shelf. Press space or enter to continue.", keys: [:space, :return])
             main_menu
         end
         make_from_possible(possible_cocktails)
-    when choices[1]
+    when "Surprise me ;)"
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
         random_cocktail = Cocktail.random(possible_cocktails)
         render_cocktail(random_cocktail)
-    when choices[2]
+        make_CKTL
+    when "Go back."
         main_menu
+    when "What am I close to making?"
+        almost_possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails_off_by_one
+        binding.pry
+        if almost_possible_cocktails.empty?
+            PROMPT.keypress("No possible cocktails found. You should add more ingredients to your shelf. Press space or enter to continue.", keys: [:space, :return])
+            main_menu
+        end
+        make_from_possible(almost_possible_cocktails)
     end
 end
 
@@ -179,6 +189,18 @@ def add_to_shelf_prompt
         puts "Somehow, we don't have that item in our vast database."
     end
     add_to_shelf_prompt
+end
+
+def remove_from_shelf_prompt
+    choices = User.find_by_id(User.current_session_id).inventory
+    item = PROMPT.select('What would you like to remove from your shelf?', ["Nevermind, go back."].concat(choices))
+    if item == "Nevermind, go back."
+        my_shelf
+    # binding.pry
+    else
+        User.find_by_id(User.current_session_id).remove_inventory(item)
+    end
+    remove_from_shelf_prompt
 end
 
 def shelf_empty_prompt
