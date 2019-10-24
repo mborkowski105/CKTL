@@ -3,19 +3,33 @@ require "tty-prompt"
 PROMPT = TTY::Prompt.new
 
 def greeting
-    if User.find_by_id(1)
-        puts "Welcome to CKTL, #{User.find_by_id(1).name}!"
+    if User.current_session_id > 0
+        puts "Welcome to CKTL, #{User.find_by_id(User.current_session_id).name}!"
     else 
         puts "Welcome to CKTL! Please create a profile."
         create_account
     end
 end
 
+def login
+    name = PROMPT.ask("What is your name?") do |q|
+        q.modify :trim
+    end
+    User.current_session_id = User.find_by(name: name).id
+    greeting
+end
+
+def logout
+    User.reset_session_id
+    greeting
+end
+
 def create_account
     name = PROMPT.ask("What is your name?") do |q|
         q.modify :trim
     end
-    User.create(name: name, id: 1)
+    User.create(name: name)
+    User.current_session_id = User.find_by(name: name).id
     greeting
 end
 

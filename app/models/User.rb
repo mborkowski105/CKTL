@@ -6,6 +6,20 @@ class User < ActiveRecord::Base
     has_many :user_ingredients
     has_many :ingredients, through: :user_ingredients
 
+    @@current_session_id = 0
+
+    def self.current_session_id
+        @@current_session_id
+    end
+
+    def self.current_session_id=(new_id)
+        @@current_session_id = new_id
+    end
+
+    def self.reset_session_id
+        @@current_session_id = 0
+    end
+
     def inventory # returns an array of ingredient names in the User's inventory
         ui = UserIngredient.all.select do |ui|
             ui.user_id == self.id
