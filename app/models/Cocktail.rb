@@ -4,7 +4,7 @@ class Cocktail < ActiveRecord::Base
     has_many :user_cocktails
     has_many :users, through: :user_cocktails
 
-    def self.get_random(cocktail_list)
+    def self.random(cocktail_list)
         cocktail_list.sample
     end
     

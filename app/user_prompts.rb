@@ -82,13 +82,17 @@ def make_CKTL
     # end
     # option = PROMPT.select(cktl_array)
     # puts "This feature has not yet been implemented."
-    choices = ["What can I make?", "Go back."]
+    choices = ["What can I make?", "Surprise me ;)", "Go back."]
     option = PROMPT.select("Great, how should we drink?", choices)
     case option
     when choices[0]
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
         make_from_possible(possible_cocktails)
     when choices[1]
+        possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
+        random_cocktail = Cocktail.random(possible_cocktails)
+        make_from_possible(random_cocktail)
+    when choices[2]
         main_menu
     end
 end
@@ -153,9 +157,12 @@ def add_to_shelf_prompt
     end
     if item == 'q'
         my_shelf
-    end
     # binding.pry
-    User.find_by_id(User.current_session_id).add_inventory(item)
+    elsif (Ingredient.valid_ingredient(item))
+        User.find_by_id(User.current_session_id).add_inventory(item)
+    else
+        puts "Somehow, we don't have that item in our vast database."
+    end
     add_to_shelf_prompt
 end
 
