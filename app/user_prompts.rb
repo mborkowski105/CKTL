@@ -91,7 +91,7 @@ def make_CKTL
     when choices[1]
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
         random_cocktail = Cocktail.random(possible_cocktails)
-        make_from_possible(random_cocktail)
+        render_cocktail(random_cocktail)
     when choices[2]
         main_menu
     end

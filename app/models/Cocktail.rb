@@ -12,6 +12,7 @@ class Cocktail < ActiveRecord::Base
         Cocktail.all.map do |cocktail|
             cocktail.name
         end
+    end
     
     def self.find_by_ingredient(ingredient) # returns a list of cocktails by ingredient type
         matching_cocktail_ingredients = CocktailIngredient.all.select do |ci|
