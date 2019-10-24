@@ -34,7 +34,7 @@ def create_account
 end
 
 def main_menu
-    choices = ["Make CKTL", "Browse CKTL", "My Shelf"]
+    choices = ["Make CKTL", "Browse CKTL", "My Shelf", "Quit"]
     option = PROMPT.select("What's the move tonight?", choices)
     case option
     when "Make CKTL"
@@ -43,6 +43,8 @@ def main_menu
         browse_CKTL
     when "My Shelf"
         my_shelf
+    when "Quit"
+        exit_CKTL
     end
 end
 
@@ -73,6 +75,7 @@ def make_from_possible(possible_cocktails)
     puts ingredients
     puts directions
     puts " "
+    prompt.keypress("Press space or enter to continue", keys: [:space, :return])
     make_CKTL
 end
 
@@ -110,6 +113,7 @@ def view_shelf_prompt
         shelf.each do |item|
             puts item
         end
+        prompt.keypress("Press space or enter to continue", keys: [:space, :return])
         my_shelf
     end
 end
@@ -152,9 +156,14 @@ def shelf_clear_prompt
     when "Yes, I'm sure."
         User.find_by_id(1).clear_inventory
         puts "Starting a 12-Step program? Good for you! Deleted!"
+        prompt.keypress("Press space or enter to continue", keys: [:space, :return])
         shelf_reprompt
     when "No, not my liquor!"
         puts "Phew, you scared me there!"
         shelf_reprompt
     end
+end
+
+def exit_CKTL
+    exit(false)
 end
