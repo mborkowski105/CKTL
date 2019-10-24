@@ -4,6 +4,10 @@ class Cocktail < ActiveRecord::Base
     has_many :user_cocktails
     has_many :users, through: :user_cocktails
 
+    def self.get_random(cocktail_list)
+        cocktail_list.sample
+    end
+    
     def self.find_by_ingredient(ingredient) # returns a list of cocktails by ingredient type
         matching_cocktail_ingredients = CocktailIngredient.all.select do |ci|
             ci.ingredient.name == ingredient
