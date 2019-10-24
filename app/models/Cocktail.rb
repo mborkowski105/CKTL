@@ -7,6 +7,11 @@ class Cocktail < ActiveRecord::Base
     def self.random(cocktail_list)
         cocktail_list.sample
     end
+
+    def self.all_names
+        Cocktail.all.map do |cocktail|
+            cocktail.name
+        end
     
     def self.find_by_ingredient(ingredient) # returns a list of cocktails by ingredient type
         matching_cocktail_ingredients = CocktailIngredient.all.select do |ci|

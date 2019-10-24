@@ -100,24 +100,25 @@ end
 def make_from_possible(possible_cocktails)
     choices = possible_cocktails
     option = PROMPT.select("Select a CKTL from the list to view its recipe.", choices)
-    name = Cocktail.find_by_name(option).name # string
-    ingredients = Cocktail.find_by_name(option).get_ingredients # array of strings
-    directions = Cocktail.find_by_name(option).directions # string
+    render_cocktail(option)
+end
+
+def render_cocktail(cocktail)
+    name = Cocktail.find_by_name(cocktail).name # string
+    ingredients = Cocktail.find_by_name(cocktail).get_ingredients # array of strings
+    directions = Cocktail.find_by_name(cocktail).directions # string
     puts "*" * 25
     puts name
     puts ingredients
     puts directions
     puts "*" * 25
     PROMPT.keypress("Press space or enter to continue", keys: [:space, :return])
-    make_CKTL
+    main_menu
 end
 
 def browse_CKTL
-    # cktl_array = Cocktail.all.map do |cktl|
-    #     cktl.name
-    # end
-    # option = PROMPT.select(cktl_array)
-    puts "This feature has not yet been implemented." 
+    # option = 
+    puts "This feature has not yet been implemented."
 end
 
 def my_shelf
