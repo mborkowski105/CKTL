@@ -87,6 +87,10 @@ def make_CKTL
     case option
     when choices[0]
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
+        if possible_cocktails.empty?
+            PROMPT.keypress("No possible cocktails found. You should add more ingredients to your shelf. Press space or enter to continue", keys: [:space, :return])
+            main_menu
+        end
         make_from_possible(possible_cocktails)
     when choices[1]
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
@@ -109,16 +113,26 @@ def render_cocktail(cocktail)
     directions = Cocktail.find_by_name(cocktail).directions # string
     puts "*" * 25
     puts name
+    puts "\nIngredients:"
     puts ingredients
+    puts "\nDirections:"
     puts directions
     puts "*" * 25
     PROMPT.keypress("Press space or enter to continue", keys: [:space, :return])
-    main_menu
 end
 
 def browse_CKTL
-    # option = 
-    puts "This feature has not yet been implemented."
+    choices = Cocktail.all_names
+    option = PROMPT.select("What cocktail would you like to view?", choices)
+    render_cocktail(option)
+    choices = ["View another cocktail", "Go back"]
+    option = PROMPT.select("What would you like to do?", choices)
+    case option
+    when "View another cocktail"
+        browse_CKTL
+    when "Go back"
+        main_menu
+    end
 end
 
 def my_shelf
