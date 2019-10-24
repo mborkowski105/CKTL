@@ -4,7 +4,7 @@ class Cocktail < ActiveRecord::Base
     has_many :user_cocktails
     has_many :users, through: :user_cocktails
 
-    def self.find_by_ingredient(ingredient) # returns a list of cocktails by liquor type
+    def self.find_by_ingredient(ingredient) # returns a list of cocktails by ingredient type
         matching_cocktail_ingredients = CocktailIngredient.all.select do |ci|
             ci.ingredient.name == ingredient
         end
@@ -20,5 +20,11 @@ class Cocktail < ActiveRecord::Base
 
     def self.select_by_name(name) #returns an array of cocktails that contains the search term
         self.where('lower(name) LIKE ?', "%#{name.downcase}%")
+    end
+
+    def get_ingredients
+        ingredients.map do |ingredient|
+            ingredient.name
+        end
     end
 end

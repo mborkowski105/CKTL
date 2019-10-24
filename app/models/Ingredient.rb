@@ -7,4 +7,8 @@ class Ingredient < ActiveRecord::Base
     def self.find_by_name(name)
         self.where('lower(name) LIKE ?', "%#{name.downcase}%").first
     end
+
+    def self.select_by_name(name) #returns an array of ingredients that contains the search term
+        self.where('lower(name) LIKE ?', "%#{name.downcase}%")
+    end
 end

@@ -37,7 +37,29 @@ def make_CKTL
     #     cktl.name
     # end
     # option = PROMPT.select(cktl_array)
-    puts "This feature has not yet been implemented."
+    # puts "This feature has not yet been implemented."
+    choices = ["What can I make?", "Go back."]
+    option = PROMPT.select("Great, how should we drink?", choices)
+    case option
+    when choices[0]
+        possible_cocktails = User.find(1).possible_cocktails
+        make_from_possible(possible_cocktails)
+    when choices[1]
+        main_menu
+    end
+end
+
+def make_from_possible(possible_cocktails)
+    choices = possible_cocktails
+    option = PROMPT.select("Select a CKTL from the list to view its recipe.", choices)
+    name = Cocktail.find_by_name(option).name # string
+    ingredients = Cocktail.find_by_name(option).get_ingredients # array of strings
+    directions = Cocktail.find_by_name(option).directions # string
+    puts name
+    puts ingredients
+    puts directions
+    puts " "
+    make_CKTL
 end
 
 def browse_CKTL
@@ -69,14 +91,22 @@ def view_shelf_prompt
     shelf = User.find_by_id(1).inventory
     if shelf.empty?
         shelf_empty_prompt
-    else 
-        pp shelf # let's make this look nicer
+    else
+        puts "Current Shelf:"
+        shelf.each do |item|
+            puts item
+        end
         my_shelf
     end
 end
 
 def add_to_shelf_prompt
-    # Vodka, Rum, Whisky, Gin, Tequila
+    item = PROMPT.ask('What would you like to add to your shelf?') do |q|
+        q.modify :trim
+    end
+    # binding.pry
+    User.find_by_id(1).add_inventory(item)
+    shelf_reprompt
 end
 
 def shelf_empty_prompt
@@ -108,6 +138,7 @@ def shelf_clear_prompt
     when "Yes, I'm sure."
         User.find_by_id(1).clear_inventory
         puts "Starting a 12-Step program? Good for you! Deleted!"
+        shelf_reprompt
     when "No, not my liquor!"
         puts "Phew, you scared me there!"
         shelf_reprompt
