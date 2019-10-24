@@ -5,18 +5,44 @@ PROMPT = TTY::Prompt.new
 def greeting
     if User.current_session_id > 0
         puts "Welcome to CKTL, #{User.find_by_id(User.current_session_id).name}!"
-    else 
-        puts "Welcome to CKTL! Please create a profile."
-        create_account
+        main_menu
+    else
+        login_prompt
     end
 end
 
-def login
+def login_prompt
+    choices = ["Log in", "Create a profile", "Quit"]
+    option = PROMPT.select("Welcome to CKTL! Please log in or create a profile." , choices)
+    case option
+    when "Log in"
+        log_into_profile
+    when "Create a profile"
+        create_account
+    when "Quit"
+        exit_CKTL
+    end
+end
+
+def log_into_profile
     name = PROMPT.ask("What is your name?") do |q|
         q.modify :trim
     end
-    User.current_session_id = User.find_by(name: name).id
-    greeting
+    if User.find_by(name: name)
+        User.current_session_id = User.find_by(name: name).id
+        greeting
+    else 
+        choices = ["Try Again", "Create a profile", "Main Menu"]
+        option = PROMPT.select("We could not find your profile, please try again or create a new profile.", choices)
+        case option
+        when "Try Again"
+            log_into_profile
+        when "Create a profile"
+            create_account
+        when "Main Menu"
+            exit_CKTL
+        end
+    end
 end
 
 def logout
@@ -34,7 +60,7 @@ def create_account
 end
 
 def main_menu
-    choices = ["Make CKTL", "Browse CKTL", "My Shelf", "Quit"]
+    choices = ["Make CKTL", "Browse CKTL", "My Shelf", "Log Out", "Quit"]
     option = PROMPT.select("What's the move tonight?", choices)
     case option
     when "Make CKTL"
@@ -43,6 +69,8 @@ def main_menu
         browse_CKTL
     when "My Shelf"
         my_shelf
+    when "Log Out"
+        logout
     when "Quit"
         exit_CKTL
     end
@@ -58,7 +86,7 @@ def make_CKTL
     option = PROMPT.select("Great, how should we drink?", choices)
     case option
     when choices[0]
-        possible_cocktails = User.find(1).possible_cocktails
+        possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
         make_from_possible(possible_cocktails)
     when choices[1]
         main_menu
@@ -71,11 +99,12 @@ def make_from_possible(possible_cocktails)
     name = Cocktail.find_by_name(option).name # string
     ingredients = Cocktail.find_by_name(option).get_ingredients # array of strings
     directions = Cocktail.find_by_name(option).directions # string
+    puts "*" * 25
     puts name
     puts ingredients
     puts directions
-    puts " "
-    prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+    puts "*" * 25
+    PROMPT.keypress("Press space or enter to continue", keys: [:space, :return])
     make_CKTL
 end
 
@@ -105,7 +134,7 @@ def my_shelf
 end
 
 def view_shelf_prompt
-    shelf = User.find_by_id(1).inventory
+    shelf = User.find_by_id(User.current_session_id).inventory
     if shelf.empty?
         shelf_empty_prompt
     else
@@ -113,18 +142,21 @@ def view_shelf_prompt
         shelf.each do |item|
             puts item
         end
-        prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+        PROMPT.keypress("Press space or enter to continue", keys: [:space, :return])
         my_shelf
     end
 end
 
 def add_to_shelf_prompt
-    item = PROMPT.ask('What would you like to add to your shelf?') do |q|
+    item = PROMPT.ask('What would you like to add to your shelf? Enter q to quit.') do |q|
         q.modify :trim
     end
+    if item == 'q'
+        my_shelf
+    end
     # binding.pry
-    User.find_by_id(1).add_inventory(item)
-    shelf_reprompt
+    User.find_by_id(User.current_session_id).add_inventory(item)
+    add_to_shelf_prompt
 end
 
 def shelf_empty_prompt
@@ -154,9 +186,9 @@ def shelf_clear_prompt
     option = PROMPT.select("Are you sure you want to clear your shelf? Your CKTL inventory will be deleted!", choices)
     case option
     when "Yes, I'm sure."
-        User.find_by_id(1).clear_inventory
+        User.find_by_id(User.current_session_id).clear_inventory
         puts "Starting a 12-Step program? Good for you! Deleted!"
-        prompt.keypress("Press space or enter to continue", keys: [:space, :return])
+        PROMPT.keypress("Press space or enter to continue", keys: [:space, :return])
         shelf_reprompt
     when "No, not my liquor!"
         puts "Phew, you scared me there!"
