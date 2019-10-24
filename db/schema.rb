@@ -44,13 +44,6 @@ ActiveRecord::Schema.define(version: 8) do
   create_table "user_ingredients", force: :cascade do |t|
     t.integer "user_id"
     t.integer "ingredient_id"
-<<<<<<< HEAD
-<<<<<<< HEAD
-    t.string "quantity"
-=======
->>>>>>> master
-=======
->>>>>>> master
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
