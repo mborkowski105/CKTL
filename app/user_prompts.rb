@@ -1,4 +1,5 @@
 require "tty-prompt"
+require "colorize"
 
 PROMPT = TTY::Prompt.new
 
@@ -15,7 +16,7 @@ def login_prompt
     choices = ["Log in", "Create a profile", "Quit"]
     option = PROMPT.select("Welcome to CKTL! Please log in or create a profile." , choices)
     case option
-    when "Log in"
+    when "Log in".colorize(:color => :gold, :background => :purple)
         log_into_profile
     when "Create a profile"
         create_account
