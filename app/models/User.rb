@@ -100,6 +100,16 @@ class User < ActiveRecord::Base
             cocktail.name
         end
     end
+
+    def view_my_CKTLs
+        my_ucs = UserCocktail.all.select do |uc|
+            uc.user_id == self.id
+        end
+
+        my_ucs.map do |uc|
+            uc.cocktail.name
+        end
+    end
 end
 
 # if the intersection of the cocktail's ingredients and the user's inventory is == to the length of the cocktail's ingredients, the user can make this cocktail

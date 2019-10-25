@@ -67,7 +67,7 @@ end
 
 def main_menu
     system ("clear")
-    choices = ["Make CKTL", "Browse CKTL", "My Shelf", "Log Out", "Quit"]
+    choices = ["Make CKTL", "Browse CKTL", "My Shelf", "My CKTL's", "Log Out", "Quit"]
     option = PROMPT.select("What's the move tonight?", choices)
     case option
     when "Make CKTL"
@@ -76,6 +76,8 @@ def main_menu
         browse_CKTL
     when "My Shelf"
         my_shelf
+    when "My CKTL's"
+        view_my_CKTLs
     when "Log Out"
         logout
     when "Quit"
@@ -107,7 +109,6 @@ def make_CKTL
         main_menu
     when "What am I close to making?"
         almost_possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails_off_by_one
-        # binding.pry
         if almost_possible_cocktails.empty?
             PROMPT.keypress("No possible cocktails found. You should add more ingredients to your shelf. Press space or enter to continue.", keys: [:space, :return])
             main_menu
@@ -124,7 +125,6 @@ def make_from_possible(possible_cocktails)
 end
 
 def render_cocktail(cocktail)
-    binding.pry
     name = Cocktail.find_by_name(cocktail).name # string
     ingredients = Cocktail.find_by_name(cocktail).get_ingredients # array of strings
     directions = Cocktail.find_by_name(cocktail).directions # string
@@ -135,11 +135,23 @@ def render_cocktail(cocktail)
     puts "\nDirections:"
     puts directions
     puts "*" * 25
-    PROMPT.keypress("Press space or enter to continue", keys: [:space, :return])
+    choices = ["Save CKTL", "Main Menu"]
+    option = PROMPT.select("", choices)
+    case option
+    when "Save CKTL"
+        if !(UserCocktail.find_by(user_id: User.find(User.current_session_id), cocktail_id: Cocktail.find_by(name: cocktail).id))  
+            UserCocktail.save_CKTL(User.find(User.current_session_id).id, Cocktail.find_by(name: cocktail).id)
+            puts "CKTL saved! Excellent choice."
+        else
+            puts "You already have this CKTL saved."
+        end
+    when "Main Menu"
+        main_menu
+    end
 end
 
 def browse_CKTL
-    choices = ["Search CKTL", "Browse all CKTL's", "Main Menu"]
+    choices = ["Search CKTL", "Browse from a list of #{Cocktail.count} CKTL's", "Main Menu"]
     option = PROMPT.select("Let's browse...", choices)
     case option
     when "Search CKTL"
@@ -156,6 +168,17 @@ def view_all_CKTL
     option = PROMPT.select("What cocktail would you like to view?", choices)
     render_cocktail(option)
     browse_CKTL_reprompt
+end
+
+def view_my_CKTLs
+    choices = User.find(User.current_session_id).view_my_CKTLs
+    option = PROMPT.select("What cocktail would you like to view?", choices.concat(["<Go back>"]))
+    if option == "<Go back>"
+        main_menu
+    else
+        render_cocktail(option)
+        browse_CKTL_reprompt
+    end
 end
 
 def search_CKTL
@@ -215,7 +238,6 @@ def add_to_shelf_prompt
     end
     if item == 'q'
         my_shelf
-    # binding.pry
     elsif (Ingredient.valid_ingredient(item))
         User.find_by_id(User.current_session_id).add_inventory(item)
         add_to_shelf_prompt
@@ -230,7 +252,6 @@ def remove_from_shelf_prompt
     item = PROMPT.select('What would you like to remove from your shelf?', ["Nevermind, go back."].concat(choices))
     if item == "Nevermind, go back."
         my_shelf
-    # binding.pry
     else
         User.find_by_id(User.current_session_id).remove_inventory(item)
     end
