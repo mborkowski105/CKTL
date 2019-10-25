@@ -3,6 +3,28 @@ require "colorize"
 
 PROMPT = TTY::Prompt.new
 
+# module StringColorizer
+#     require "colorize"
+#     refine $stdout do
+#         def puts(string)
+#             binding.pry
+#             new_string = string.colorize(:color => :yellow, :background => :magenta)
+#             super(new_string)
+#         end
+#     end
+# end
+
+# def print(string)
+#     if string.is_a? String
+#         binding.pry
+#         new_string = string.colorize(:color => :yellow, :background => :magenta)
+#         super(new_string)
+#     end
+# end
+
+
+#using StringColorizer
+
 def greeting
     if User.current_session_id > 0
         puts "Welcome to CKTL, #{User.find_by_id(User.current_session_id).name}!"
@@ -13,10 +35,11 @@ def greeting
 end
 
 def login_prompt
+    system("clear")
     choices = ["Log in", "Create a profile", "Quit"]
     option = PROMPT.select("Welcome to CKTL! Please log in or create a profile." , choices)
     case option
-    when "Log in".colorize(:color => :gold, :background => :purple)
+    when "Log in"
         log_into_profile
     when "Create a profile"
         create_account
@@ -39,14 +62,14 @@ def log_into_profile
         sleep(1)
         greeting
     else 
-        choices = ["Try Again", "Create a profile", "Main Menu"]
+        choices = ["Try Again", "Create a profile", "Quit"]
         option = PROMPT.select("We could not find your profile, please try again or create a new profile.", choices)
         case option
         when "Try Again"
             log_into_profile
         when "Create a profile"
             create_account
-        when "Main Menu"
+        when "Quit"
             exit_CKTL
         end
     end
@@ -61,9 +84,11 @@ def create_account
     name = PROMPT.ask("What is your name?") do |q|
         q.modify :trim
     end
-    User.create(name: name)
+    new_user = User.create(name: name)
     User.current_session_id = User.find_by(name: name).id
-    greeting
+    puts "Welcome to CKTL, #{new_user.name}!"
+    sleep(1.5)
+    main_menu
 end
 
 def main_menu
@@ -163,9 +188,21 @@ def search_CKTL
     search_term = PROMPT.ask("Try searching for a CKTL, and we'll do our best to find it:")
     results = Cocktail.select_by_name(search_term)
     result_names = Cocktail.get_names(results)
-    option = PROMPT.select("What cocktail would you like to view?", result_names)
-    render_cocktail(option)
-    browse_CKTL_reprompt
+    binding.pry
+    if !result_names.empty?
+        option = PROMPT.select("What cocktail would you like to view?", result_names)
+        render_cocktail(option)
+        browse_CKTL_reprompt
+    else
+        choices = ["Try Again", "Go Back"]
+        option = PROMPT.select("No results found, would you like to try again?", choices)
+        case option
+        when "Try Again"
+            search_CKTL
+        when "Go Back"
+            browse_CKTL
+        end
+    end
 end
 
 def browse_CKTL_reprompt
