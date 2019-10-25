@@ -138,7 +138,7 @@ def browse_CKTL
     case option
     when "Search CKTL"
         search_CKTL
-    when "Browse all CKTL's"
+    when "Browse from a list of #{Cocktail.count} CKTL's"
         view_all_CKTL
     when "Main Menu"
         main_menu

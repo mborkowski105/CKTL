@@ -30,16 +30,11 @@ class User < ActiveRecord::Base
     end
 
     def add_inventory(new_name)
-        exact_match = Ingredient.find_by(name: new_name)
-        like_match = Ingredient.find_by_name(new_name)
-        user_inventory_match = UserIngredient.find_by(user_id: self.id, ingredient_id: Ingredient.find_by(name: new_name).id)
-
-        if !(user_inventory_match) && exact_match
-            UserIngredient.create(user_id: self.id, ingredient_id: exact_match.id)
-            puts "Added item: #{exact_match.name}"
-        elsif !(user_inventory_match) && like_match
-            UserIngredient.create(user_id: self.id, ingredient_id: like_match.id)
-            puts "Added item: #{like_match.name}"
+        match = UserIngredient.find_by(user_id: self.id, ingredient_id: Ingredient.find_by_name(new_name).id)
+        
+        if !(match)
+            UserIngredient.create(user_id: self.id, ingredient_id: Ingredient.find_by_name(new_name).id)
+            puts "Item added!"
         else
             puts "You already have this ingredient in your inventory."
         end
