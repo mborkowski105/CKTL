@@ -30,6 +30,12 @@ def log_into_profile
     end
     if User.find_by(name: name)
         User.current_session_id = User.find_by(name: name).id
+        print "\n#{name} was already found in our database. Logging you in."
+        sleep(1)
+        print '.'
+        sleep(1)
+        print '.'
+        sleep(1)
         greeting
     else 
         choices = ["Try Again", "Create a profile", "Main Menu"]
@@ -78,11 +84,6 @@ def main_menu
 end
 
 def make_CKTL
-    # cktl_array = possible_cocktails.map do |cktl|
-    #     cktl.name
-    # end
-    # option = PROMPT.select(cktl_array)
-    # puts "This feature has not yet been implemented."
     choices = ["What can I make?", "Surprise me ;)", "What am I close to making?", "Go back."]
     option = PROMPT.select("Great, how should we drink?", choices)
     case option
@@ -95,6 +96,10 @@ def make_CKTL
         make_from_possible(possible_cocktails)
     when "Surprise me ;)"
         possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails
+        if possible_cocktails.empty?
+            puts "Surprise: nothing! Let's add some items to your shelf first ;)"
+            add_to_shelf_prompt
+        end
         random_cocktail = Cocktail.random(possible_cocktails)
         render_cocktail(random_cocktail)
         make_CKTL
@@ -102,7 +107,7 @@ def make_CKTL
         main_menu
     when "What am I close to making?"
         almost_possible_cocktails = User.find_by_id(User.current_session_id).possible_cocktails_off_by_one
-        binding.pry
+        # binding.pry
         if almost_possible_cocktails.empty?
             PROMPT.keypress("No possible cocktails found. You should add more ingredients to your shelf. Press space or enter to continue.", keys: [:space, :return])
             main_menu
@@ -115,6 +120,7 @@ def make_from_possible(possible_cocktails)
     choices = possible_cocktails
     option = PROMPT.select("Select a CKTL from the list to view its recipe.", choices)
     render_cocktail(option)
+    make_CKTL
 end
 
 def render_cocktail(cocktail)
@@ -212,10 +218,11 @@ def add_to_shelf_prompt
     # binding.pry
     elsif (Ingredient.valid_ingredient(item))
         User.find_by_id(User.current_session_id).add_inventory(item)
+        add_to_shelf_prompt
     else
         puts "Somehow, we don't have that item in our vast database."
+        add_to_shelf_prompt
     end
-    add_to_shelf_prompt
 end
 
 def remove_from_shelf_prompt
