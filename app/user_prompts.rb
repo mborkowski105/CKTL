@@ -124,6 +124,7 @@ def make_from_possible(possible_cocktails)
 end
 
 def render_cocktail(cocktail)
+    binding.pry
     name = Cocktail.find_by_name(cocktail).name # string
     ingredients = Cocktail.find_by_name(cocktail).get_ingredients # array of strings
     directions = Cocktail.find_by_name(cocktail).directions # string
@@ -138,9 +139,35 @@ def render_cocktail(cocktail)
 end
 
 def browse_CKTL
+    choices = ["Search CKTL", "Browse all CKTL's", "Main Menu"]
+    option = PROMPT.select("Let's browse...", choices)
+    case option
+    when "Search CKTL"
+        search_CKTL
+    when "Browse all CKTL's"
+        view_all_CKTL
+    when "Main Menu"
+        main_menu
+    end
+end
+
+def view_all_CKTL
     choices = Cocktail.all_names
     option = PROMPT.select("What cocktail would you like to view?", choices)
     render_cocktail(option)
+    browse_CKTL_reprompt
+end
+
+def search_CKTL
+    search_term = PROMPT.ask("Try searching for a CKTL, and we'll do our best to find it:")
+    results = Cocktail.select_by_name(search_term)
+    result_names = Cocktail.get_names(results)
+    option = PROMPT.select("What cocktail would you like to view?", result_names)
+    render_cocktail(option)
+    browse_CKTL_reprompt
+end
+
+def browse_CKTL_reprompt
     choices = ["View another cocktail", "Go back"]
     option = PROMPT.select("What would you like to do?", choices)
     case option
