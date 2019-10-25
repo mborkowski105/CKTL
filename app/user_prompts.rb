@@ -26,6 +26,13 @@ PROMPT = TTY::Prompt.new
 #using StringColorizer
 
 def greeting
+puts '    _|_|_|  _|    _|  _|_|_|_|_|  _|     '   
+puts '    _|        _|  _|        _|      _|   '     
+puts '    _|        _|_|          _|      _|   '     
+puts '    _|        _|  _|        _|      _|  '      
+puts '      _|_|_|  _|    _|      _|      _|_|_|_| '
+
+    
     if User.current_session_id > 0
         puts "Welcome to CKTL, #{User.find_by_id(User.current_session_id).name}!"
         main_menu
@@ -36,6 +43,42 @@ end
 
 def login_prompt
     system("clear")
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNKXWMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMXl.lXMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMXc.,0WMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMK;.:KMMMMMMMMMMMMMM'
+    puts 'MMMMMMXxllllllllllllllllllllllllllllllllc   ;llllllo0WMMMMMM'
+    puts 'MMMMMMWO:. .;ccccccccccccccccccccccccc:.  ,cccc   .dXMMMMMMM'
+    puts 'MMMMMMMMNk,.;OWMMMMMMMMMMMMMMMMMWXOxxxo..oNMMXo..lKWMMMMMMMM'
+    puts 'MMMMMMMMMMXd..cOXXXXXXXXXXXXXKK0o . , .  kXKd .:OWMMMMMMMMMM'
+    puts 'MMMMMMMMMMMWKl..................  .oXNO;.....,kNMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMW0:.                ,:kWMMk.  .dXMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMNk,               :0NWN0: .lKWMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMXd               . , ..:0WMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMKl.                ,kNMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMW0:.             dXMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMNk,         .lKWMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMNx      .:0WMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMKl.   kNMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .oWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMMMK, .dWMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMMMMMMMWNO  .lXWMMMMMMMMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMMMMMMWX0kdl; .    .,coxOKNWMMMMMMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMWXOdl:,..                . ;cox0NMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMNx:,,,,,,,,,,,,,,,,,,,,,,,,,,,;lKMMMMMMMMMMMMMM'
+    puts 'MMMMMMMMMMMMMMWNNNNNNNNNNNNNNNNNNNNNNNNNNNNNWWMMMMMMMMMMMMMM'
+    puts '      _|_|_|  _|    _|  _|_|_|_|_|  _|     '   
+    puts '    _|        _|  _|        _|      _|   '     
+    puts '    _|        _|_|          _|      _|   '     
+    puts '    _|        _|  _|        _|      _|  '      
+    puts '      _|_|_|  _|    _|      _|      _|_|_|_| '
+    puts ""
     choices = ["Log in", "Create a profile", "Quit"]
     option = PROMPT.select("Welcome to CKTL! Please log in or create a profile." , choices)
     case option
@@ -211,7 +254,6 @@ def search_CKTL
     search_term = PROMPT.ask("Try searching for a CKTL, and we'll do our best to find it:")
     results = Cocktail.select_by_name(search_term)
     result_names = Cocktail.get_names(results)
-    binding.pry
     if !result_names.empty?
         option = PROMPT.select("What cocktail would you like to view?", result_names)
         render_cocktail(option)
