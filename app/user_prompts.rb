@@ -150,7 +150,6 @@ def make_from_possible(possible_cocktails)
 end
 
 def render_cocktail(cocktail)
-    binding.pry
     name = Cocktail.find_by_name(cocktail).name # string
     ingredients = Cocktail.find_by_name(cocktail).get_ingredients # array of strings
     directions = Cocktail.find_by_name(cocktail).directions # string
