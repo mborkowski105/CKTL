@@ -5,3 +5,8 @@ This is an application I wrote with a partner for module 1 of the Flatiron Schoo
 This is a CLI (Command Line Interface) application, meaning this will run completely within your command line/terminal. Simply clone down the app, make your way into the newly cloned directory, and type in the command "ruby bin/run.rb" to get started.
 
 Use the arrow keys and the enter key to navigate.
+
+Demo
+
+https://share.getcloudapp.com/JruWXvJP - Part 1
+https://share.getcloudapp.com/geu200jl - Part 2
