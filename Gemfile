@@ -3,7 +3,7 @@ source "https://rubygems.org"
 
 gem "rspec"
 gem "sqlite3", '~> 1.3.6'
-gem "activerecord", "5.1.0"
+gem "activerecord", "5.2.8.1"
 gem "sinatra-activerecord"
 gem "rake"
 gem "pry"
